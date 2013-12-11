@@ -3,6 +3,7 @@ use strict;
 use DBI; 
 use XML::RSS;
 use LWP::Simple;
+use Digest::MD5 qw(md5_hex);
 
 # Variables
 my $username = 'username'; # set your MySQL username 
@@ -38,14 +39,15 @@ if ($sth->rows < 0) {
 		my $title = $item->{'title'};
 		my $link = $item->{'link'};
 		my $isi = $item->{'description'};
-		
-		my $dth = $dbh->prepare('INSERT INTO link (id_sindikasi, judul, link, ringkasan) VALUES (?, ?, ?, ?);')
+		my $md5 = md5($link);
+				
+		my $dth = $dbh->prepare('INSERT INTO link (id_sindikasi, judul, link, ringkasan, md5) VALUES (?, ?, ?, ?, ?);')
 		 || die "$DBI::errstr";
 		#$dth->prepare($query);
 		
 		$title =~ s/^\s+|\s+$//g;
 		$isi =~ s/^\s+|\s+$//g;
-		$dth->execute($id, $title, $link, $isi);
+		$dth->execute($id, $title, $link, $isi, $md5);
 		print "    +--- $title \n";
 		$dth->finish;
 	}
