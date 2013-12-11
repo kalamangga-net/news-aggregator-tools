@@ -13,7 +13,7 @@ my $server = 'mysqlservername'; # set your server hostname (probably localhost)
 # Get the rows from database
 my $dbh = DBI->connect("DBI:mysql:$database;host=$server", $username, $password)
  || die "Could not connect to database: $DBI::errstr";
-my $sth = $dbh->prepare('select id, nama, url from xml')
+my $sth = $dbh->prepare("SELECT `id`, `nama`, `url` FROM `xml` WHERE `fetch`=1")
  || die "$DBI::errstr";
 #$sth->bind_param(1, "");
 $sth->execute();
